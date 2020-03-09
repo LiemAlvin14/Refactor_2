@@ -1,2 +1,3 @@
 Edited:
 - Refactor_2/Command Strategy/tests/TestStrategy.java
+- Refactor_2/Command Strategy/tests/TestCommand.java
