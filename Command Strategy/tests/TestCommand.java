@@ -27,7 +27,8 @@ class TestCommand {
 
     private PriorityQueue studentQueue;
     private final int MAX_TESTS = 1000, MAX_STUDENTS = getRand(3, MAX_TESTS), root = 0;
-
+    //refactor
+    private Student firstStudent, secondStudent;
 
     @BeforeEach
     void setUp() {
@@ -35,7 +36,8 @@ class TestCommand {
         studentQueue = new PriorityQueue(byGpa);
         populateQueue(studentQueue);
     }
-
+    
+    
     private int getRand(int low, int high) // random element between low,high inclusive
     {
         Random rand = new Random();
@@ -46,32 +48,43 @@ class TestCommand {
         for (int i = 0; i < MAX_STUDENTS; ++i)
             pQueue.offer(new Student());
     }
+    
+    //refactor
+    private processor clearProcessor(Processor p){
+        while(!p.empty())
+        {
+            p.pop().undo(); // undoing every command!
+        }
+    }
+    //refactor
+    private void init(Processor processor){
+        firstStudent = new Student();
+        new AddCommand(studentQueue,processor,firstStudent).execute();
+
+        secondStudent = new Student();
+        new AddCommand(studentQueue,processor,secondStudent).execute();
+    }
+    
+    
     @Test
     void testAdd()
     {
         Processor processor = new Processor();
 
         int initialsize = studentQueue.size(), currentsize= 0;
-
-        Student firstStudent = new Student();
-        new AddCommand(studentQueue,processor,firstStudent).execute();
-
-        Student secondStudent = new Student();
-        new AddCommand(studentQueue,processor,secondStudent).execute();
+        
+        init(processor);
 
         currentsize = studentQueue.size();
         assertEquals(initialsize + 2, currentsize); // 2 elements added
         assertTrue(studentQueue.contains(firstStudent)&& studentQueue.contains(secondStudent)); // both students present
 
-        while(!processor.empty())
-        {
-            processor.pop().undo();
-        }
+        processor = clearProcessor(processor);
         currentsize = studentQueue.size();
 
         assertEquals(initialsize, currentsize); // 2 elements added
         assertFalse(studentQueue.contains(firstStudent)&& studentQueue.contains(secondStudent)); // both students present
-
+        
     }
 
     @Test
@@ -92,10 +105,7 @@ class TestCommand {
         assertEquals(initialsize - 2, currentsize); // 2 elements removed
         assertTrue(!studentQueue.contains(firstStudent)&& !studentQueue.contains(secondStudent)); // both students absent
 
-        while(!processor.empty())
-        {
-            processor.pop().undo();
-        }
+        processor = clearProcessor(processor);
         currentsize = studentQueue.size();
 
         assertEquals(initialsize, currentsize); // 2 elements added
@@ -111,11 +121,7 @@ class TestCommand {
         Student removedStudent = (Student) studentQueue.peek(); // get max priority student
         new RemoveCommand(studentQueue,processor).execute();
 
-        Student firstStudent = new Student();
-        new AddCommand(studentQueue,processor,firstStudent).execute();
-
-        Student secondStudent = new Student();
-        new AddCommand(studentQueue,processor,secondStudent).execute();
+        init(processor)
 
         int initialsize = studentQueue.size(), currentsize;
 
@@ -135,11 +141,8 @@ class TestCommand {
 
         assertEquals(studentQueue.size(),initialsize + random_inserts - random_deletes); // ensures all commands worked
 
-        while(!processor.empty())
-        {
-            processor.pop().undo(); // undoing every command!
-        }
-
+        processor = clearProcessor(processor);
+        
         currentsize = studentQueue.size();
         assertEquals(initialsize,currentsize);
         assertTrue(studentQueue.contains(firstStudent)&& studentQueue.contains(secondStudent)); // both students present
