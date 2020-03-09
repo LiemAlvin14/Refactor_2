@@ -1,1 +1,2 @@
-Saya hanya merefactor di folder test di 
+Edited:
+- Refactor_2/Command Strategy/tests/TestStrategy.java
