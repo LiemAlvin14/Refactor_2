@@ -40,15 +40,19 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
         for (int i = 0; i < MAX_STUDENTS; ++i)
             pQueue.offer(new Student());
     }
-
-    @Test
-     void testGpaOrdering() {
-
-        studentQueue.clear();
+  
+    //Refactor
+    private void init(PriorityQueue studentQueue ){
+        
         studentQueue.offer(new Student("Jake", "abc@gmail", 3.2, "12345", 120));
         studentQueue.offer(new Student("Edward", "abc@gmail", 3.7, "12345", 120));
         studentQueue.offer(new Student("Steve", "abc@gmail", 2.6, "12345", 120));
         studentQueue.offer(new Student("Jim", "abc@gmail", 3.4, "12345", 120));
+    }
+    @Test
+     void testGpaOrdering() {
+        studentQueue.clear();
+        init(studentQueue);
 
         String expectedOrder = "/Edward//Jim//Jake//Steve/", actualOrder = "";
 
@@ -63,10 +67,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
         OrderByUnits byUnits = new OrderByUnits();
         PriorityQueue studentQueue = new PriorityQueue(byUnits);
 
-        studentQueue.offer(new Student("Jake", "abc@gmail", 3.0, "12345", 110));
-        studentQueue.offer(new Student("Edward", "abc@gmail", 3.0, "12345", 135));
-        studentQueue.offer(new Student("Steve", "abc@gmail", 3.0, "12345", 102));
-        studentQueue.offer(new Student("Jim", "abc@gmail", 3.0, "12345", 108));
+        init(studentQueue);
 
         String expectedOrder = "/Edward//Jake//Jim//Steve/", actualOrder = "";
 
@@ -83,10 +84,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
         OrderByBoth byBoth = new OrderByBoth();
         PriorityQueue studentQueue = new PriorityQueue(byBoth);
 
-        studentQueue.offer(new Student("Jake", "abc@gmail", 3.6, "12345", 110));
-        studentQueue.offer(new Student("Edward", "abc@gmail", 3.8, "12345", 135));
-        studentQueue.offer(new Student("Steve", "abc@gmail", 3.0, "12345", 102));
-        studentQueue.offer(new Student("Jim", "abc@gmail", 3.2, "12345", 108));
+        init(studentQueue);
 
         String expectedOrder = "/Edward//Jake//Jim//Steve/", actualOrder = "";
 
